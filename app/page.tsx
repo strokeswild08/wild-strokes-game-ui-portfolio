@@ -56,6 +56,11 @@ const portfolio: PortfolioItem[] = [
 ];
 
 const categories = ['All work', 'Game UI', 'HUD', 'Mobile UI', 'Pixel UI', 'Motion'] as const;
+const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+
+function portfolioAsset(file: string) {
+  return `${publicBasePath}/portfolio/${file}`;
+}
 
 function titleFor(item: PortfolioItem) {
   if (item.label) return item.label;
@@ -112,7 +117,7 @@ export default function Home() {
       </header>
 
       <section className="hero" id="top">
-        <img className="hero-art" src="/portfolio/r-h-stevens-home-screen.jpg" alt="Neon game interface artwork" draggable={false} />
+        <img className="hero-art" src={portfolioAsset('r-h-stevens-home-screen.jpg')} alt="Neon game interface artwork" draggable={false} />
         <div className="hero-shade" />
         <div className="hero-grid" aria-hidden="true" />
         <div className="hero-content">
@@ -144,7 +149,7 @@ export default function Home() {
           {filtered.slice(0, visible).map((item, index) => (
             <article className={`project-card project-${(index % 6) + 1}`} key={item.file}>
               <button className="project-media" type="button" onClick={() => setSelected(item)} aria-label={`Open ${titleFor(item)}`}>
-                {item.category === 'Motion' ? <video src={`/portfolio/${item.file}`} muted loop autoPlay playsInline controlsList="nodownload" draggable={false} /> : <img src={`/portfolio/${item.file}`} alt={titleFor(item)} loading={index < 6 ? 'eager' : 'lazy'} draggable={false} />}
+                {item.category === 'Motion' ? <video src={portfolioAsset(item.file)} muted loop autoPlay playsInline controlsList="nodownload" draggable={false} /> : <img src={portfolioAsset(item.file)} alt={titleFor(item)} loading={index < 6 ? 'eager' : 'lazy'} draggable={false} />}
                 <span className="open-project">Open <ArrowUpRight size={15} /></span>
                 {item.category === 'Motion' && <i className="play-badge"><Play size={16} fill="currentColor" /> Motion</i>}
               </button>
@@ -156,7 +161,7 @@ export default function Home() {
       </section>
 
       <section className="motion-feature" aria-label="Motion design showcase">
-        <video src="/portfolio/victoryscreen.mp4" muted loop autoPlay playsInline controlsList="nodownload" draggable={false} />
+        <video src={portfolioAsset('victoryscreen.mp4')} muted loop autoPlay playsInline controlsList="nodownload" draggable={false} />
         <div className="motion-overlay" />
         <div className="motion-copy"><span className="eyebrow">MOTION SYSTEMS</span><h2>THE SCREEN<br />COMES <em>ALIVE.</em></h2><p>Transitions, rewards and feedback sequences designed to make every interaction land.</p><button type="button" onClick={() => setSelected(portfolio.find((item) => item.category === 'Motion') ?? null)}>Watch the sequence <Play size={15} fill="currentColor" /></button></div>
       </section>
@@ -191,10 +196,11 @@ export default function Home() {
       {selected && <div className="lightbox" role="dialog" aria-modal="true" aria-label={`${titleFor(selected)} preview`} onMouseDown={(event) => event.target === event.currentTarget && setSelected(null)}>
         <div className="lightbox-panel">
           <button className="close-lightbox" type="button" onClick={() => setSelected(null)} aria-label="Close preview">×</button>
-          <div className="dialog-media">{selected.category === 'Motion' ? <video src={`/portfolio/${selected.file}`} controls autoPlay loop playsInline controlsList="nodownload" draggable={false} /> : <img src={`/portfolio/${selected.file}`} alt={titleFor(selected)} draggable={false} />}</div>
+          <div className="dialog-media">{selected.category === 'Motion' ? <video src={portfolioAsset(selected.file)} controls autoPlay loop playsInline controlsList="nodownload" draggable={false} /> : <img src={portfolioAsset(selected.file)} alt={titleFor(selected)} draggable={false} />}</div>
           <div className="dialog-meta"><span>{selected.category}</span><h3>{titleFor(selected)}</h3><p>Wild Strokes · UI / UX Portfolio</p><small>Press ESC or tap outside to close</small></div>
         </div>
       </div>}
     </main>
   );
 }
+
